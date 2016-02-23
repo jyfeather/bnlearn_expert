@@ -2,11 +2,10 @@ clear all; close all; clc;
 cd('/Users/jyfeather/Google_Drive/Research/Manuscript/2016_BNLearn/codes');
 
 %% setting need change before running experiments
-%rng('shuffle');     % generate results randomly
 numRun = 20;         % run 20 times to get mean and CI
-data = 'alarm'; % network from bayesian network repository
-numExpert = 4;      % number of experts
-sigma2 = 1;         % sigma square 
+data = 'asia';       % network from bayesian network repository
+numExpert = 4;       % number of experts
+sigma2 = 1;          % sigma square 
 
 %% variables to record results
 corr_SDP = [];      % numRun X numIter
@@ -20,10 +19,14 @@ while numRun > 0
     numRun = numRun - 1;
     
     %% some parameters for observational data generation
-    nSamples = 200;
-    nEvals = 2500;       % a limit on the number of regression problems
-    discrete = 0;        % Set to 1 for binary data
-    interv = 0;          % Set to 0 for observational data
+    dagFunc = str2func(strcat('getDAG',data));
+    [~, nodeNames] = dagFunc();
+    numNodes = size(nodeNames, 2);
+    nSamples = 2*numNodes;   % # of samples is twice # of nodes
+     
+    nEvals = 2500;           % a limit on the number of regression problems
+    discrete = 0;            % Set to 1 for binary data
+    interv = 0;              % Set to 0 for observational data
 
     [X,clamped,DAG,nodeNames] = sampleNetwork(data,nSamples,discrete,interv);
 
@@ -39,8 +42,6 @@ while numRun > 0
     %[~,~,~,orderSet,~,~] = bootstrp(numIter, OrderSearch(X(randi(nSamples,1,nSamples),:),nEvals,0,penalty,discrete,clamped,potentialParents));
     while numIter > 1
         numIter = numIter - 1;
-        % generate obeservational data
-        %X = sampleNetwork(data,nSamples,discrete,interv);
         % get order
         [~,~,~,order,~,~] = OrderSearch(X(randi(nSamples,1,nSamples),:),nEvals,0,penalty,discrete,clamped,potentialParents);
         orderSet = [orderSet; order];

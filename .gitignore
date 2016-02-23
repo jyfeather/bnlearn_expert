@@ -1,3 +1,6 @@
 *.DS_Store
 result/
 results/
+result_analysis/
+DAGs/
+.Rhistory
