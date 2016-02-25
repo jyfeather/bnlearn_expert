@@ -8,7 +8,7 @@ numExpertSet = [1 2 4];
 sigma2Set = [1 2 4];       
 combinations = combvec(dataNumSet, numExpertSet, sigma2Set); % all possible combinations
 
-numComb = 30;
+numComb = 59;
 while numComb <= size(combinations,2)
     try
     clc;
